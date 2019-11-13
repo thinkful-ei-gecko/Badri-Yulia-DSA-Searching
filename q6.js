@@ -116,71 +116,74 @@ module.exports = BinarySearchTree;
 
 const BST = new BinarySearchTree();
 
-// BST.insert(25);
-// BST.insert(15);
-// BST.insert(50);
-// BST.insert(10);
-// BST.insert(24);
-// BST.insert(35);
-// BST.insert(70);
-// BST.insert(4);
-// BST.insert(12);
-// BST.insert(18);
-// BST.insert(31);
-// BST.insert(44);
-// BST.insert(66);
-// BST.insert(90);
-// BST.insert(22);
+BST.insert(5,'Captain Picard');
+BST.insert(3, 'Commander Riker');
+BST.insert(2, 'Lt. Cmdr. Worf');
+BST.insert(4, 'Lt. Cmdr.LaForge');
+BST.insert(1, 'Lieutenant security-officer');
+BST.insert(6, 'Commander Data');
+BST.insert(8, 'Lt. Cmdr. Crusher');
+BST.insert(7, 'Lieutenant Selar');
 
-function inOrder(t) {
-  let acc = [];
-
-  function traverseTree(bst) {
-    if (!bst) {
-      return 'Empty tree';
-    }
-    traverseTree(bst.left);
-    acc.push(bst.key);
-    traverseTree(bst.right);
+class _Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
   }
-  traverseTree(t);
-  return acc;
 }
 
-//console.log(inOrder(BST));
-
-function preOrder(t) {
-  let acc = [];
-
-  function traverseTree(bst) {
-    if (!bst) {
-      return 'Empty tree';
-    }
-    acc.push(bst.key);
-    traverseTree(bst.left);
-    traverseTree(bst.right);
+class Queue {
+  constructor() {
+    this.first = null;
+    this.last = null;
   }
-  traverseTree(t);
-  return acc;
+  enqueue(data) {
+    const node = new _Node(data);
+
+    if (this.first === null) {
+      this.first = node;
+    }
+
+    if (this.last) {
+      this.last.next = node;
+    }
+    //make the new node the last item on the queue
+    this.last = node;
+  }
+
+  dequeue() {
+    //if the queue is empty, there is nothing to return
+    if (this.first === null) {
+      return;
+    }
+    const node = this.first;
+    this.first = this.first.next;
+    //if this is the last item in the queue
+    if (node === this.last) {
+      this.last = null;
+    }
+    return node.value;
+  }
 }
 
-//console.log(preOrder(BST));
+function bfs(tree, values = []) {
+  const queue = new Queue(); // Assuming a Queue is implemented (refer to previous lesson on Queue)
+  const node = tree;
+  queue.enqueue(node);
+  while (queue.first !== null) {
+    const node = queue.dequeue(); //remove from the queue
+    values.push(node.value); // add that value from the queue to an array
 
-function postOrder(t) {
-  let acc = [];
-
-  function traverseTree(bst) {
-    if (!bst) {
-      return 'Empty tree';
+    if (node.left) {
+      queue.enqueue(node.left); //add left child to the queue
     }
-    
-    traverseTree(bst.left);
-    traverseTree(bst.right);
-    acc.push(bst.key);
+
+    if (node.right) {
+      queue.enqueue(node.right); // add right child to the queue
+    }
   }
-  traverseTree(t);
-  return acc;
+
+  return values;
 }
 
-console.log(postOrder(BST));
-
+console.log(bfs(BST));
